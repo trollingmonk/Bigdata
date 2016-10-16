@@ -1,0 +1,21 @@
+--test table 
+create table temp.list_table_test ( group_by int, sort_by int,value string) row format delimited  fields terminated by '\t';
+
+--datafile.txt
+1       2011    A
+1       2010    B
+1       2011    C
+2       2010    2A
+2       2011    2B
+2       2009    2C
+2       2012    2D
+2       2015    2E
+
+
+load data local inpath '/home/rahul/Desktop/datafile.txt' into table temp.list_table_test;
+
+hive>add file /home/rahul/Desktop/func_listagg.py;
+
+hive>select transform (group_by,sort_by,value) using 'python func_listagg.py' as (group_by,value) from temp.list_table_test;
+1       A:C:B
+2       2E:2D:2B:2A:2C
